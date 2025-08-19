@@ -1,0 +1,39 @@
+name: Deploy Hexo to GitHub Pages
+
+on:
+  push:
+    branches: [ source ]  # 当 source 分支有推送时触发
+  workflow_dispatch:      # 允许手动触发
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+      with:
+        ref: source
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        
+    - name: Generate static files
+      run: |
+        npx hexo clean
+        npx hexo generate
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        publish_branch: main  # 部署到 main 分支
+        force_orphan: true   # 强制覆盖，保持 main 分支干净
