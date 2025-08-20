@@ -697,6 +697,7 @@ aside:
   card_author:
     enable: true
     description:
+    avatar: https://obsidian-1317277327.cos.ap-chengdu.myqcloud.com/attachment/IMG_6763.jpeg
     button:
       enable: true
       icon: # fab fa-github
