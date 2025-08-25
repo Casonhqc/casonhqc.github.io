@@ -1,13 +1,14 @@
 ---
-date: 2023-12-05 21:13:28
-modify: 2023-12-05 21:13:28
 author: Cason
 tags:
   - Java基础
-aliases:
 share: true
 categories:
   - 源码分析
+abbrlink: '0'
+date: 2023-12-05 21:13:28
+modify: 2023-12-05 21:13:28
+aliases:
 ---
 ### String s = new String("xyz")创建几个实例和变量
 #### 一般情况

@@ -875,10 +875,10 @@ pangu:
 # Lazyload (圖片懶加載)
 # https://github.com/verlok/vanilla-lazyload
 lazyload:
-  enable: true
-  field: site # site/post
+  enable: false
+  field: post # site/post
   placeholder: # /assets/load.gif
-  blur: true
+  blur: false
 
 # PWA
 # See https://github.com/JLHwung/hexo-offline
