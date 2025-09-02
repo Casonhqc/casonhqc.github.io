@@ -7,8 +7,9 @@ tags:
 categories:
   - 文章笔记
 share: true
+title: 操作集合的fastFail策略
 ---
-### 现象
+[]()### 现象
 当我们使用迭代器遍历集合对象时，如果有其他线程在我们遍历时修改元素。或者当前线程在遍历时修改了元素，就会报错`Concurrent Modification Exception`。我理解为这里所谓的`fast`就是提前终止遍历，因为可以预见的是继续遍历下去，线程安全问题依旧存在
 
 ### 实现原理
