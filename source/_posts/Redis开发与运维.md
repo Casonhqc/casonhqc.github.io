@@ -1,15 +1,16 @@
 ---
-date: 2024-09-05 23:05:56
-modify: 2024-09-05 23:05:56
 author: Cason
 tags:
   - Redis
   - 读书笔记
-aliases:
 title: 《Redis开发与运维》读书笔记
 categories:
   - 书籍笔记
 share: true
+abbrlink: b92a275f
+date: 2024-09-05 23:05:56
+modify: 2024-09-05 23:05:56
+aliases:
 ---
 # Redis 特性
 ## 1.速度快

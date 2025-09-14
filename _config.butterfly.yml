@@ -36,8 +36,8 @@ highlight_theme: mac #  darker / pale night / light / ocean / mac / mac light / 
 highlight_copy: true # copy button
 highlight_lang: true # show the code language
 highlight_shrink: false # true: shrink the code blocks / false: expand the code blocks | none: expand code blocks and hide the button
-highlight_height_limit: 230 # unit: px
-code_word_wrap: false
+highlight_height_limit: false # unit: px
+code_word_wrap: true
 
 # copy settings
 # copyright: Add the copyright information after copied content (複製的內容後面加上版權信息)
@@ -107,7 +107,7 @@ mathjax:
 # --------------------------------------
 
 # Favicon（網站圖標）
-favicon:
+favicon: /assets/favicon.ico
 
 # Avatar (頭像)
 avatar:
@@ -118,10 +118,10 @@ avatar:
 disable_top_img: false
 
 # The banner image of home page
-index_img:
+index_img: /assets/head.jpg
 
 # If the banner of page not setting, it will show the top_img
-default_top_img:
+default_top_img: /assets/head.jpg
 
 # The banner image of archive page
 archive_img:
@@ -541,13 +541,13 @@ tag_ui: # 留空或 index
 # "#e4f4f6" "#efefef"
 background:
   #【必选】默认背景 
-  default: var(--default-bg)
+  default: url(/assets/head.jpg)
   #【可选】PC端夜间模式背景 
-  darkmode: var(--darkmode-bg)
+  darkmode: url(/assets/darktimeModePhoto.jpg)
   #【可选】移动端日间默认背景 
-  mobileday: var(--mobileday-bg)
+  mobileday: url(/assets/head.jpg)
   #【可选】移动端夜间模式背景 
-  mobilenight: var(--mobilenight-bg)
+  mobilenight: url(/assets/darktimeModePhoto.jpg)
 
 # Footer Background
 footer_bg: false
@@ -904,7 +904,7 @@ css_prefix: true
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-    # - <link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"> # 常规css
+    - <link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"> # 自定义CSS样式
     - <link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"> # 引入组件库(f12)
     # 综合美化模块样式引入
     - <style id="themeColor"></style> # 主题色
