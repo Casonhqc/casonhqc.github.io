@@ -177,37 +177,6 @@ public class DefaultPointcutAdvisor implements PointcutAdvisor {
 # 动态代理：AOP实现的幕后推手
 现在问题来了：有了Pointcut和Advice，如何让它们"生效"呢？“不修改源码，动态增强功能”这事儿，到底是怎么做到的呢？
 答案就是**动态代理**。这是AOP实现的核心技术，对于代理模式本身不多赘述，其实概念就是把AOP的概念又讲了一次**找个代理人帮你干活，但是代理人比你能干，会在干活前后做些额外的事情**。
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor #FFFFFF
-skinparam sequence {
-  ArrowColor #1976D2
-  LifeLineBorderColor #1976D2
-  LifeLineBackgroundColor #E3F2FD
-  ParticipantBorderColor #1976D2
-  ParticipantBackgroundColor #BBDEFB
-  ParticipantFontColor #000000
-  ActorBorderColor #1976D2
-  ActorBackgroundColor #BBDEFB
-}
-
-participant "客户端" as Client
-participant "代理对象" as Proxy
-participant "目标对象" as Target
-
-Client -> Proxy: 调用方法
-activate Proxy
-Proxy -> Proxy: 前置增强\n(Advice.before())
-Proxy -> Target: 调用目标方法
-activate Target
-Target --> Proxy: 返回结果
-deactivate Target
-Proxy -> Proxy: 后置增强\n(Advice.after())
-Proxy --> Client: 返回结果
-deactivate Proxy
-@enduml
-```
 ## 代理的两种实现方式
 ### JDK动态代理
 Java官方自带的代理能力，要求目标类必须实现一个接口，适用于目标对象实现了接口的情况：
@@ -272,30 +241,7 @@ Spring的策略是：**能用JDK就用JDK，没办法才用CGLIB**。
 实际项目中，一个方法可能需要多个增强：日志、权限、事务、性能监控... 。如何让这些增强有序地执行呢？答案是**方法拦截链**（MethodInterceptor Chain）。
 ## 责任链模式的应用
 核心思想就是：每个拦截器执行完自己的逻辑后，决定是否继续执行下一个拦截器。
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor #FFFFFF
-skinparam activity {
-  BackgroundColor #E3F2FD
-  BorderColor #1976D2
-  FontColor #000000
-}
 
-start
-:客户端调用;
-:日志拦截器;
-note right: 记录方法调用
-:权限拦截器;
-note right: 检查权限
-:事务拦截器;
-note right: 开启事务
-:目标方法;
-note right: 执行业务逻辑
-:返回结果;
-stop
-@enduml
-```
 在dummy-aop中，这个"安检流程"是这样实现的：
 **第一步：拦截器链的构建**
 当代理对象的方法被调用时，框架首先要把所有匹配的Advisor转换成拦截器链。这里有个问题：Advisor包含的是各种类型的Advice（MethodBeforeAdvice、AfterReturningAdvice等），但责任链需要统一的MethodInterceptor接口。怎么办？答案是适配器模式，我们稍后详细讲。
@@ -469,67 +415,7 @@ public class MethodBeforeAdviceAdapter implements AdvisorAdapter {
 
 # 整体架构图
 说了这么多，我们来看看dummy-aop的整体架构：
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor #FFFFFF
-skinparam class {
-  BackgroundColor #E3F2FD
-  BorderColor #1976D2
-  FontColor #000000
-  ArrowColor #1976D2
-}
-
-class ProxyFactory {
-  +addAdvice(Advice)
-  +addAdvisor(Advisor)
-  +setTargetSource(TargetSource)
-  +getProxy() : Object
-}
-
-interface AopProxy {
-  +getProxy() : Object
-}
-
-class JdkDynamicAopProxy {
-  +getProxy() : Object
-  +invoke(Object, Method, Object[]) : Object
-}
-
-class CglibAopProxy {
-  +getProxy() : Object
-  +intercept(...) : Object
-}
-
-interface Advisor {
-  +getAdvice() : Advice
-  +getPointcut() : Pointcut
-}
-
-interface Advice
-
-interface Pointcut {
-  +matches(Method, Class) : boolean
-}
-
-class ReflectiveMethodInvocation {
-  -target : Object
-  -method : Method
-  -arguments : Object[]
-  -interceptors : List
-  +proceed() : Object
-}
-
-ProxyFactory --> AopProxy
-AopProxy <|-- JdkDynamicAopProxy
-AopProxy <|-- CglibAopProxy
-ProxyFactory --> Advisor
-Advisor --> Advice
-Advisor --> Pointcut
-JdkDynamicAopProxy --> ReflectiveMethodInvocation
-CglibAopProxy --> ReflectiveMethodInvocation
-@enduml
-```
+![image.png](https://obsidian-1317277327.cos.ap-chengdu.myqcloud.com/attachment/20250926174505.png)
 # 实战演示：手动模拟Spring AOP机制
 说了这么多理论，咱们来看个实际例子。这里我们手动模拟Spring内部的AOP机制，展示代理对象是如何创建和工作的：
 > **注意**：下面的代码是**手动创建代理对象**来演示AOP原理。在实际Spring项目中，这些工作都是由IOC容器自动完成的——容器会自动扫描@Aspect类，创建Advisor，生成代理对象，并替换原始Bean。这里手动操作是为了让你看清楚AOP的内部工作机制。
@@ -562,7 +448,7 @@ Rod Johnson 开始唱歌...
 卧槽，是不是很神奇？我们没有修改Singer类的任何代码，却成功地在方法执行前后添加了日志功能！
 这就是AOP的核心魅力：**通过代理模式实现了横切关注点的分离**。在实际Spring项目中，你只需要写个@Aspect类，剩下的代理创建、对象替换等工作Spring都帮你自动完成了。
 
-![image.png](https://obsidian-1317277327.cos.ap-chengdu.myqcloud.com/attachment/20250926174505.png)
+
 
 # 小结
 第一篇的内容就到这里。我们来回顾一下AOP的核心要点：
